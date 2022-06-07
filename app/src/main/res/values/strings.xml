@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SynchronossWeatherApp</string>
+    <string name="database">weather_db</string>
+</resources>

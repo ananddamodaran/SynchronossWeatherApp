@@ -2,6 +2,14 @@ package dev.anand.synchronossweatherapp
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
+import timber.log.Timber
 
 @HiltAndroidApp
-class SynchronossWeatherApp : Application()
+class SynchronossWeatherApp : Application(){
+    override fun onCreate() {
+        super.onCreate()
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+    }
+}

@@ -7,8 +7,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.anand.synchronossweatherapp.R
-import dev.anand.synchronossweatherapp.data.db.dao.CurrentWeatherDAO
 import dev.anand.synchronossweatherapp.data.db.WeatherDatabase
+import dev.anand.synchronossweatherapp.data.db.dao.CurrentWeatherDAO
 import javax.inject.Singleton
 
 @Module

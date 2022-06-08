@@ -1,10 +1,12 @@
 package dev.anand.synchronossweatherapp.ui.screen.home
 
-import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.anand.synchronossweatherapp.data.model.CurrentWeatherForecastResponse
 import dev.anand.synchronossweatherapp.repository.AppRepository
 import kotlinx.coroutines.*
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -13,15 +15,21 @@ class HomeScreenViewModel @Inject constructor(
 
 ): ViewModel() {
 
-    fun getWeather(latitude:Double,logitude:Double){
+    var locationMutableLiveData: MutableLiveData<CurrentWeatherForecastResponse?> = MutableLiveData()
+
+    init {
+        locationMutableLiveData.value = null
+    }
+    fun getWeather(latitude:Double, longitude:Double){
+        Timber.d("getWeather: $latitude , $longitude")
 
         val mainActivityJob = Job()
         val errorHandler = CoroutineExceptionHandler { _, exception ->
-            Log.d("Weather","error")
+            Timber.e("Error $exception" )
         }
         val coroutineScope = CoroutineScope(mainActivityJob + Dispatchers.Main)
         coroutineScope.launch(errorHandler) {
-            repository.getWeather(latitude,logitude)
+            locationMutableLiveData.value = repository.getWeather(latitude,longitude)
 
         }
     }

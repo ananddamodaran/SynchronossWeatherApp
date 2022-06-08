@@ -7,7 +7,7 @@ import dev.anand.synchronossweatherapp.data.db.dao.CurrentWeatherDAO
 @Database(
     entities = [
         CurrentWeatherEntity::class
-               ], version = 1,exportSchema = true)
+               ], version = 1,exportSchema = false)
 abstract class WeatherDatabase : RoomDatabase() {
     abstract fun weatherDao(): CurrentWeatherDAO
 }

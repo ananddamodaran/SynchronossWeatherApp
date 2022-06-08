@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,28 +21,37 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import dagger.hilt.android.AndroidEntryPoint
+import dev.anand.synchronossweatherapp.data.model.CurrentWeatherForecastResponse
 import dev.anand.synchronossweatherapp.ui.screen.home.HomeScreenViewModel
 import dev.anand.synchronossweatherapp.ui.theme.SynchronossWeatherAppTheme
+import timber.log.Timber
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private var longitude: Double = 0.0
     private var latitude: Double = 0.0
-    private lateinit var locationRequest:LocationRequest;
-    val location = mutableStateOf("Location")
-    internal val viewModel: HomeScreenViewModel by viewModels()
+    private lateinit var locationRequest:LocationRequest
+    private val location = mutableStateOf("Location")
+    private val viewModel: HomeScreenViewModel by viewModels()
+    private var locationUpdateObserver: Observer<CurrentWeatherForecastResponse?> =
+        Observer<CurrentWeatherForecastResponse?> { weatherRResponse ->
+            val city = weatherRResponse?.city?.name
+                location.value = city?:""
+                Timber.d("weatherRResponse $weatherRResponse")
 
+        }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.locationMutableLiveData.observe(this, locationUpdateObserver)
         setContent {
-            CompositionLocalProvider(){}
             SynchronossWeatherAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -58,8 +66,6 @@ class MainActivity : ComponentActivity() {
         locationRequest.interval = 5000;
         locationRequest.fastestInterval = 2000;
         getCurrentLocation()
-        viewModel.getWeather(latitude,longitude)
-        location.value = "Lat: $latitude Lng: $longitude"
 
 
 
@@ -67,6 +73,7 @@ class MainActivity : ComponentActivity() {
 
 
 private fun getCurrentLocation() {
+    Timber.d("getCurrentLocation")
     if (ActivityCompat.checkSelfPermission(
             this,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -83,8 +90,8 @@ private fun getCurrentLocation() {
                             val index = locationResult.locations.size - 1
                             latitude = locationResult.locations[index].latitude
                             longitude = locationResult.locations[index].longitude
-                            //AddressText.setText("Latitude: $latitude\nLongitude: $longitude")
-                            Log.i("Location","Lat: $latitude Lng: $longitude")
+                            Timber.i("Location - Lat: $latitude Lng: $longitude")
+                            viewModel.getWeather(latitude,longitude)
                         }
                     }
                 }, Looper.getMainLooper())

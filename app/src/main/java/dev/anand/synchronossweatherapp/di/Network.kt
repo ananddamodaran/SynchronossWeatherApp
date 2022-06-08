@@ -10,7 +10,6 @@ import dev.anand.synchronossweatherapp.BuildConfig
 import dev.anand.synchronossweatherapp.network.CurrentWeatherService
 import dev.anand.synchronossweatherapp.network.QueryParameterAddInterceptor
 import okhttp3.Interceptor
-import okhttp3.OkHttp
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.LoggingEventListener
@@ -43,7 +42,6 @@ object Network {
             .client(okHttpClient)
             .baseUrl(BuildConfig.WEATHER_APP_URL)
             .addConverterFactory(GsonConverterFactory.create())
-
             .build()
     }
     @Provides
@@ -51,4 +49,6 @@ object Network {
     fun provideWeatherService(retrofit: Retrofit): CurrentWeatherService{
             return  retrofit.create(CurrentWeatherService::class.java)
     }
+
+
 }

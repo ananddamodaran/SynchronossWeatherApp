@@ -1,2 +1,3 @@
 ### SynchronossWeatherApp
+
 UML - WIP

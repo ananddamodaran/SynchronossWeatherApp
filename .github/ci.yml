@@ -1,0 +1,27 @@
+name: CI
+on:
+  push:
+    branches: [ dev ]
+
+jobs:
+
+  build:
+    name: Generate APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+
+      - name: Assemble app debug APK
+        run: bash ./gradlew :app:assembleDebug --stacktrace
+        
+      - name: Upload app APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: synchronoss-weather-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+

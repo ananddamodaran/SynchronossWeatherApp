@@ -16,12 +16,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
+import androidx.work.*
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -31,7 +31,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.anand.synchronossweatherapp.data.model.CurrentWeatherForecastResponse
 import dev.anand.synchronossweatherapp.ui.screen.home.HomeScreenViewModel
 import dev.anand.synchronossweatherapp.ui.theme.SynchronossWeatherAppTheme
+import dev.anand.synchronossweatherapp.worker.UpdateWeatherWorker
 import timber.log.Timber
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 @AndroidEntryPoint
@@ -48,9 +51,13 @@ class MainActivity : ComponentActivity() {
                 Timber.d("weatherRResponse $weatherRResponse")
 
         }
+    private val workManager by lazy {
+        WorkManager.getInstance(applicationContext)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.locationMutableLiveData.observe(this, locationUpdateObserver)
+        createPeriodicWorkRequest()
         setContent {
             SynchronossWeatherAppTheme {
                 Surface(
@@ -72,7 +79,44 @@ class MainActivity : ComponentActivity() {
     }
 
 
-private fun getCurrentLocation() {
+    private fun createPeriodicWorkRequest() {
+        val updateWeatherWorkder = PeriodicWorkRequestBuilder<UpdateWeatherWorker>(2, TimeUnit.MINUTES)
+            .setConstraints(UpdateWeatherWorker.constraints)
+            .addTag("updateWeather")
+            .build()
+        workManager.enqueueUniquePeriodicWork(
+            "periodicImageDownload",
+            ExistingPeriodicWorkPolicy.KEEP,
+            updateWeatherWorkder
+        )
+        observeWork(updateWeatherWorkder.id)
+    }
+    private fun observeWork(id: UUID) {
+        workManager.getWorkInfosByTagLiveData("updateWeather")
+            .observe(this) { info ->
+                info.forEach { Timber.d("${it.state}") }
+                Timber.d("UpdateWeatherWorker downloaded $info")
+
+               /* if (info != null && info.equals(WorkInfo.State.SUCCEEDED)) {
+                    Timber.d("UpdateWeatherWorker downloaded")
+                }*/
+            }
+    }
+    private fun queryWorkInfo() {
+        val workQuery = WorkQuery.Builder
+            .fromTags(listOf("imageWork"))
+            .addStates(listOf(WorkInfo.State.SUCCEEDED))
+            .addUniqueWorkNames(
+                listOf("oneTimeImageDownload", "delayedImageDownload", "periodicImageDownload")
+            )
+            .build()
+
+        workManager.getWorkInfosLiveData(workQuery).observe(this) { workInfos ->
+            Timber.d("UpdateWeatherWorker ${workInfos.size}, ${workInfos.size}")
+        }
+    }
+
+    private fun getCurrentLocation() {
     Timber.d("getCurrentLocation")
     if (ActivityCompat.checkSelfPermission(
             this,

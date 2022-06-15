@@ -6,36 +6,37 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class CurrentWeatherForecastResponse(
     val cod: String,
-    val message:Int,
+    val message: Int,
     val cnt: Int,
     val city: City,
     val list: List<Data>
 
-): Parcelable
+) : Parcelable
+
 @Parcelize
 data class Data(
     val dt: Long,
     val weather: List<Weather>,
-    val main:Main,
-    val clouds:Clouds,
-    val wind:Wind,
+    val main: Main,
+    val clouds: Clouds,
+    val wind: Wind,
     val visibility: Int,
     val pop: Double,
     val sys: Sys,
     val dt_txt: String
 
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Clouds(
     val all: Int
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Coord(
     val lat: Double,
     val lon: Double
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Main(
@@ -45,7 +46,7 @@ data class Main(
     val temp: Double,
     val temp_max: Double,
     val temp_min: Double
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Sys(
@@ -54,7 +55,7 @@ data class Sys(
     val sunrise: Int,
     val sunset: Int,
     val type: Int
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Weather(
@@ -62,17 +63,17 @@ data class Weather(
     val icon: String,
     val id: Int,
     val main: String
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class Wind(
     val deg: Int,
     val speed: Double
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class City(
     val id: Int,
     val name: String,
-    val coord:Coord
-): Parcelable
+    val coord: Coord
+) : Parcelable

@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
-import androidx.work.*
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -29,35 +28,47 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import dagger.hilt.android.AndroidEntryPoint
 import dev.anand.synchronossweatherapp.data.model.CurrentWeatherForecastResponse
+import dev.anand.synchronossweatherapp.domain.CurrentWeather
 import dev.anand.synchronossweatherapp.ui.screen.home.HomeScreenViewModel
 import dev.anand.synchronossweatherapp.ui.theme.SynchronossWeatherAppTheme
-import dev.anand.synchronossweatherapp.worker.UpdateWeatherWorker
 import timber.log.Timber
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private var isGPSEnabled = false
+
     private var longitude: Double = 0.0
     private var latitude: Double = 0.0
-    private lateinit var locationRequest:LocationRequest
+    private lateinit var locationRequest: LocationRequest
     private val location = mutableStateOf("Location")
     private val viewModel: HomeScreenViewModel by viewModels()
     private var locationUpdateObserver: Observer<CurrentWeatherForecastResponse?> =
         Observer<CurrentWeatherForecastResponse?> { weatherRResponse ->
             val city = weatherRResponse?.city?.name
-                location.value = city?:""
-                Timber.d("weatherRResponse $weatherRResponse")
+            location.value = city ?: ""
+            Timber.d("weatherRResponse $weatherRResponse")
 
         }
-    private val workManager by lazy {
+    private var weatherUpdateObserver: Observer<CurrentWeather?> =
+        Observer<CurrentWeather?>{ currentWeather ->
+            Timber.d("currentWeather $currentWeather")
+        }
+
+    /*private val workManager by lazy {
         WorkManager.getInstance(applicationContext)
-    }
+    }*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.locationMutableLiveData.observe(this, locationUpdateObserver)
-        createPeriodicWorkRequest()
+        // viewModel.locationMutableLiveData.observe(this, locationUpdateObserver)
+        viewModel.weather.observe(this,weatherUpdateObserver)
+        //  createPeriodicWorkRequest()
+        /* GpsUtil(this).turnGPSOn(object : GpsUtil.OnGpsListener {
+
+             override fun gpsStatus(isGPSEnable: Boolean) {
+                 this@MainActivity.isGPSEnabled = isGPSEnable
+             }
+         })*/
         setContent {
             SynchronossWeatherAppTheme {
                 Surface(
@@ -68,38 +79,37 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-         locationRequest = LocationRequest.create();
+        locationRequest = LocationRequest.create();
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY;
         locationRequest.interval = 5000;
         locationRequest.fastestInterval = 2000;
         getCurrentLocation()
 
 
-
     }
 
 
-    private fun createPeriodicWorkRequest() {
-        val updateWeatherWorkder = PeriodicWorkRequestBuilder<UpdateWeatherWorker>(2, TimeUnit.MINUTES)
-            .setConstraints(UpdateWeatherWorker.constraints)
-            .addTag("updateWeather")
-            .build()
-        workManager.enqueueUniquePeriodicWork(
-            "periodicImageDownload",
-            ExistingPeriodicWorkPolicy.KEEP,
-            updateWeatherWorkder
-        )
-        observeWork(updateWeatherWorkder.id)
-    }
-    private fun observeWork(id: UUID) {
-        workManager.getWorkInfosByTagLiveData("updateWeather")
-            .observe(this) { info ->
-                info.forEach { Timber.d("${it.state}") }
-                Timber.d("UpdateWeatherWorker downloaded $info")
+    /*  private fun createPeriodicWorkRequest() {
+          val updateWeatherWorkder = PeriodicWorkRequestBuilder<UpdateWeatherWorker>(2, TimeUnit.MINUTES)
+              .setConstraints(UpdateWeatherWorker.constraints)
+              .addTag("updateWeather")
+              .build()
+          workManager.enqueueUniquePeriodicWork(
+              "periodicImageDownload",
+              ExistingPeriodicWorkPolicy.KEEP,
+              updateWeatherWorkder
+          )
+          observeWork(updateWeatherWorkder.id)
+      }
+      private fun observeWork(id: UUID) {
+          workManager.getWorkInfosByTagLiveData("updateWeather")
+              .observe(this) { info ->
+                  info.forEach { Timber.d("${it.state}") }
+                  Timber.d("UpdateWeatherWorker downloaded $info")
 
-               /* if (info != null && info.equals(WorkInfo.State.SUCCEEDED)) {
+                 *//* if (info != null && info.equals(WorkInfo.State.SUCCEEDED)) {
                     Timber.d("UpdateWeatherWorker downloaded")
-                }*/
+                }*//*
             }
     }
     private fun queryWorkInfo() {
@@ -114,74 +124,77 @@ class MainActivity : ComponentActivity() {
         workManager.getWorkInfosLiveData(workQuery).observe(this) { workInfos ->
             Timber.d("UpdateWeatherWorker ${workInfos.size}, ${workInfos.size}")
         }
-    }
+    }*/
 
     private fun getCurrentLocation() {
-    Timber.d("getCurrentLocation")
-    if (ActivityCompat.checkSelfPermission(
-            this,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-    ) {
-        if (isGPSEnabled()) {
-            LocationServices.getFusedLocationProviderClient(this@MainActivity)
-                .requestLocationUpdates(locationRequest, object : LocationCallback() {
-                    override fun onLocationResult(locationResult: LocationResult) {
-                        super.onLocationResult(locationResult)
-                        LocationServices.getFusedLocationProviderClient(this@MainActivity)
-                            .removeLocationUpdates(this)
-                        if (locationResult.locations.size > 0) {
-                            val index = locationResult.locations.size - 1
-                            latitude = locationResult.locations[index].latitude
-                            longitude = locationResult.locations[index].longitude
-                            Timber.i("Location - Lat: $latitude Lng: $longitude")
-                            viewModel.getWeather(latitude,longitude)
+        Timber.d("getCurrentLocation")
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            if (isGPSEnabled()) {
+                LocationServices.getFusedLocationProviderClient(this@MainActivity)
+                    .requestLocationUpdates(locationRequest, object : LocationCallback() {
+                        override fun onLocationResult(locationResult: LocationResult) {
+                            super.onLocationResult(locationResult)
+
+                            if (locationResult.locations.size > 0) {
+                                val index = locationResult.locations.size - 1
+                                latitude = locationResult.locations[index].latitude
+                                longitude = locationResult.locations[index].longitude
+                                Timber.i("Location - Lat: $latitude Lng: $longitude")
+                                viewModel.getWeatherFlow(latitude, longitude)
+                            }
+                            LocationServices.getFusedLocationProviderClient(this@MainActivity)
+                                .removeLocationUpdates(this)
                         }
-                    }
-                }, Looper.getMainLooper())
-        } else {
-            turnOnGPS()
-        }
-    } else {
-        requestPermissions(arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-    }
-}
-
-private fun turnOnGPS() {
-    val builder = LocationSettingsRequest.Builder()
-        .addLocationRequest(locationRequest)
-    builder.setAlwaysShow(true)
-    val result: Task<LocationSettingsResponse> =
-        LocationServices.getSettingsClient(applicationContext)
-            .checkLocationSettings(builder.build())
-    result.addOnCompleteListener(OnCompleteListener<LocationSettingsResponse?> { task ->
-        try {
-            val response = task.getResult(ApiException::class.java)
-            Toast.makeText(this@MainActivity, "GPS is already tured on", Toast.LENGTH_SHORT).show()
-        } catch (e: ApiException) {
-            when (e.statusCode) {
-                LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> try {
-                    val resolvableApiException = e as ResolvableApiException
-                    resolvableApiException.startResolutionForResult(this@MainActivity, 2)
-                } catch (ex: SendIntentException) {
-                    ex.printStackTrace()
-                }
-                LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {}
+                    }, Looper.getMainLooper())
+            } else {
+                turnOnGPS()
             }
+        } else {
+            requestPermissions(arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION), 1)
         }
-    })
+    }
+
+    private fun turnOnGPS() {
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+        builder.setAlwaysShow(true)
+        val result: Task<LocationSettingsResponse> =
+            LocationServices.getSettingsClient(applicationContext)
+                .checkLocationSettings(builder.build())
+        result.addOnCompleteListener(OnCompleteListener<LocationSettingsResponse?> { task ->
+            try {
+                val response = task.getResult(ApiException::class.java)
+                Toast.makeText(this@MainActivity, "GPS is already tured on", Toast.LENGTH_SHORT)
+                    .show()
+            } catch (e: ApiException) {
+                when (e.statusCode) {
+                    LocationSettingsStatusCodes.RESOLUTION_REQUIRED -> try {
+                        val resolvableApiException = e as ResolvableApiException
+                        resolvableApiException.startResolutionForResult(this@MainActivity, 2)
+                    } catch (ex: SendIntentException) {
+                        ex.printStackTrace()
+                    }
+                    LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {}
+                }
+            }
+        })
+    }
+
+    private fun isGPSEnabled(): Boolean {
+        var locationManager: LocationManager? = null
+        var isEnabled = false
+        if (locationManager == null) {
+            locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+        }
+        isEnabled = locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        return isEnabled
+    }
 }
 
-private fun isGPSEnabled(): Boolean {
-    var locationManager: LocationManager? = null
-    var isEnabled = false
-    if (locationManager == null) {
-        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager?
-    }
-    isEnabled = locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER)
-    return isEnabled
-}
-}
 @Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")

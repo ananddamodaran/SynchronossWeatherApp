@@ -1,41 +1,41 @@
 package dev.anand.synchronossweatherapp.ui.screen.home
 
-import android.app.Application
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.work.WorkManager
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.anand.synchronossweatherapp.data.model.CurrentWeatherForecastResponse
 import dev.anand.synchronossweatherapp.repository.AppRepository
-import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(
+class HomeScreenViewModel @Inject internal constructor(
     private val repository: AppRepository,
 
-): ViewModel() {
-
-
-
-
-    var locationMutableLiveData: MutableLiveData<CurrentWeatherForecastResponse?> = MutableLiveData()
-
+    ) : ViewModel() {
+    val weather = repository.weather
     init {
-        locationMutableLiveData.value = null
+        //  getAll()
     }
-    fun getWeather(latitude:Double, longitude:Double){
+
+    private fun getAll() {
+        viewModelScope.launch {
+            repository.getAll().catch {
+                Timber.e(it.localizedMessage)
+            }
+                .collect {
+                    Timber.d("DB Size: ${it.size}")
+                }
+        }
+    }
+
+
+    fun getWeatherFlow(latitude: Double, longitude: Double) {
         Timber.d("UpdateWeatherWorker getWeather: $latitude , $longitude")
-
-        val mainActivityJob = Job()
-        val errorHandler = CoroutineExceptionHandler { _, exception ->
-            Timber.e("Error $exception" )
-        }
-        val coroutineScope = CoroutineScope(mainActivityJob + Dispatchers.Main)
-        coroutineScope.launch(errorHandler) {
-            locationMutableLiveData.value = repository.getWeather(latitude,longitude)
-
+        viewModelScope.launch {
+            repository.getWeatherFlow(latitude, longitude)
         }
     }
+
 }

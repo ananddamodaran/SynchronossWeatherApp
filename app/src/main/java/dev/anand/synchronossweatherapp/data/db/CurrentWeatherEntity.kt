@@ -1,19 +1,18 @@
 package dev.anand.synchronossweatherapp.data.db
 
-import android.os.Parcelable
-import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.parcelize.Parcelize
+import dev.anand.synchronossweatherapp.data.db.CurrentWeatherEntity.Companion.TABLE_NAME
 
-@Entity
-@Immutable
-@Parcelize
+@Entity(tableName = TABLE_NAME)
 data class CurrentWeatherEntity(
     @PrimaryKey
-    val id:Long,
-    val name:String,
     val dt: Long,
-    val description:String
+    val name: String,
+    val description: String
 
-    ): Parcelable
+) {
+    companion object {
+        const val TABLE_NAME = "weather"
+    }
+}

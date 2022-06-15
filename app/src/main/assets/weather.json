@@ -1,0 +1,22 @@
+[
+  {
+    "dt": 1,
+    "name": "Trichy",
+    "description": "Rainy"
+  },
+  {
+    "dt": 2,
+    "name": "Trichy",
+    "description": "Sunny"
+  },
+  {
+    "dt": 3,
+    "name": "Trichy",
+    "description": "Winter"
+  },
+  {
+    "dt": 4,
+    "name": "Trichy",
+    "description": "Autumn"
+  }
+]

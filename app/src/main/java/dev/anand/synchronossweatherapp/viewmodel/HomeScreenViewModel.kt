@@ -1,4 +1,4 @@
-package dev.anand.synchronossweatherapp.ui.screen.home
+package dev.anand.synchronossweatherapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,27 +12,11 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeScreenViewModel @Inject internal constructor(
     private val repository: AppRepository,
-
-    ) : ViewModel() {
+) : ViewModel() {
     val weather = repository.weather
-    init {
-        //  getAll()
-    }
-
-    private fun getAll() {
-        viewModelScope.launch {
-            repository.getAll().catch {
-                Timber.e(it.localizedMessage)
-            }
-                .collect {
-                    Timber.d("DB Size: ${it.size}")
-                }
-        }
-    }
-
 
     fun getWeatherFlow(latitude: Double, longitude: Double) {
-        Timber.d("UpdateWeatherWorker getWeather: $latitude , $longitude")
+        Timber.d("Weather: $latitude , $longitude")
         viewModelScope.launch {
             repository.getWeatherFlow(latitude, longitude)
         }

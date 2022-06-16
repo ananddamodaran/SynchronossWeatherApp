@@ -2,21 +2,33 @@
   {
     "dt": 1,
     "name": "Trichy",
-    "description": "Rainy"
+    "main": "R",
+    "description": "Rainy",
+    "temp": 27.08,
+    "icon": "10n"
   },
   {
     "dt": 2,
-    "name": "Trichy",
-    "description": "Sunny"
+    "name": "Bangalore",
+    "main": "W",
+    "description": "Winter",
+    "temp": 27.08,
+    "icon": "10n"
   },
   {
     "dt": 3,
-    "name": "Trichy",
-    "description": "Winter"
+    "name": "Chennai",
+    "main": "S",
+    "description": "Summer",
+    "temp": 27.08,
+    "icon": "10n"
   },
   {
-    "dt": 4,
-    "name": "Trichy",
-    "description": "Autumn"
+    "dt": 5,
+    "name": "Delhi",
+    "main": "H",
+    "description": "Hot",
+    "temp": 27.08,
+    "icon": "10n"
   }
 ]

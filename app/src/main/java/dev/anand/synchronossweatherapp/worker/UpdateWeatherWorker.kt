@@ -8,8 +8,8 @@ import androidx.work.WorkerParameters
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
-import dev.anand.synchronossweatherapp.data.db.CurrentWeatherEntity
 import dev.anand.synchronossweatherapp.data.db.WeatherDatabase
+import dev.anand.synchronossweatherapp.data.db.WeatherInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -25,12 +25,12 @@ class UpdateWeatherWorker(context: Context, workerParams: WorkerParameters) :
             if (filename != null) {
                 applicationContext.assets.open(filename).use { inputStream ->
                     JsonReader(inputStream.reader()).use { jsonReader ->
-                        val weatherType = object : TypeToken<List<CurrentWeatherEntity>>() {}.type
-                        val weatherList: List<CurrentWeatherEntity> =
+                        val weatherType = object : TypeToken<List<WeatherInfo>>() {}.type
+                        val weatherList: List<WeatherInfo> =
                             Gson().fromJson(jsonReader, weatherType)
 
                         val database = WeatherDatabase.getInstance(applicationContext)
-                        database.weatherDao().insertAll(weatherList)
+                        database.weatherInfoDao().insertAll(weatherList)
 
                         Result.success()
                     }

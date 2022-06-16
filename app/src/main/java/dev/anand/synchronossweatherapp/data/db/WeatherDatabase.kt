@@ -16,12 +16,10 @@ import timber.log.Timber
 
 @Database(
     entities = [
-        CurrentWeatherEntity::class,
         WeatherInfo::class
     ], version = 1
 )
 abstract class WeatherDatabase : RoomDatabase() {
-    abstract fun weatherDao(): CurrentWeatherDAO
     abstract fun weatherInfoDao(): WeatherInfoDao
 
     companion object {

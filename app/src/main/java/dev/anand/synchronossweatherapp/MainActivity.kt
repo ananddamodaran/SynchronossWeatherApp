@@ -27,10 +27,9 @@ import com.google.android.gms.location.*
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import dagger.hilt.android.AndroidEntryPoint
-import dev.anand.synchronossweatherapp.data.model.CurrentWeatherForecastResponse
 import dev.anand.synchronossweatherapp.domain.CurrentWeather
-import dev.anand.synchronossweatherapp.ui.screen.home.HomeScreenViewModel
 import dev.anand.synchronossweatherapp.ui.theme.SynchronossWeatherAppTheme
+import dev.anand.synchronossweatherapp.viewmodel.HomeScreenViewModel
 import timber.log.Timber
 
 
@@ -43,25 +42,16 @@ class MainActivity : ComponentActivity() {
     private lateinit var locationRequest: LocationRequest
     private val location = mutableStateOf("Location")
     private val viewModel: HomeScreenViewModel by viewModels()
-    private var locationUpdateObserver: Observer<CurrentWeatherForecastResponse?> =
-        Observer<CurrentWeatherForecastResponse?> { weatherRResponse ->
-            val city = weatherRResponse?.city?.name
-            location.value = city ?: ""
-            Timber.d("weatherRResponse $weatherRResponse")
 
-        }
     private var weatherUpdateObserver: Observer<CurrentWeather?> =
-        Observer<CurrentWeather?>{ currentWeather ->
+        Observer<CurrentWeather?> { currentWeather ->
             Timber.d("currentWeather $currentWeather")
         }
 
-    /*private val workManager by lazy {
-        WorkManager.getInstance(applicationContext)
-    }*/
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // viewModel.locationMutableLiveData.observe(this, locationUpdateObserver)
-        viewModel.weather.observe(this,weatherUpdateObserver)
+        viewModel.weather.observe(this, weatherUpdateObserver)
         //  createPeriodicWorkRequest()
         /* GpsUtil(this).turnGPSOn(object : GpsUtil.OnGpsListener {
 

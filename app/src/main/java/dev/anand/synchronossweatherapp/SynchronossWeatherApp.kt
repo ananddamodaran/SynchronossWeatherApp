@@ -31,7 +31,7 @@ class SynchronossWeatherApp : Application(),
             .build()
     }
     private fun createPeriodicWorkRequest() {
-        val refreshWeatherWorker = PeriodicWorkRequestBuilder<RefreshWeatherWorker>(15, TimeUnit.MINUTES)
+        val refreshWeatherWorker = PeriodicWorkRequestBuilder<RefreshWeatherWorker>(2, TimeUnit.HOURS)
             .setConstraints(RefreshWeatherWorker.constraints)
             .addTag("refreshWeather")
             .build()

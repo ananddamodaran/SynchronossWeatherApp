@@ -12,10 +12,10 @@ interface WeatherInfoDao {
     fun insertAll(weather: List<WeatherInfo>)
 
     @Query("SELECT * FROM ${WeatherInfo.TABLE_NAME}")
-    fun getAll(): Flow<List<WeatherInfo>>
+    fun getAll(): Flow<WeatherInfo>
 
     @Query("SELECT * FROM ${WeatherInfo.TABLE_NAME}")
-    fun getWeather(): Flow<WeatherInfo>
+    fun getWeather(): WeatherInfo
     @Query("DELETE FROM ${WeatherInfo.TABLE_NAME}")
     fun clear()
 }

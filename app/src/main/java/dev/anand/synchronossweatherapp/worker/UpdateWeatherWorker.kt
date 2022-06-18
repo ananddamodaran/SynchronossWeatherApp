@@ -7,7 +7,6 @@ import dev.anand.synchronossweatherapp.data.api.CurrentWeatherService
 import dev.anand.synchronossweatherapp.data.api.model.asDatabaseModel
 import dev.anand.synchronossweatherapp.data.db.WeatherDatabase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -22,12 +21,12 @@ class UpdateWeatherWorker(val context: Context, workerParams: WorkerParameters) 
             val lng = inputData.getString("lng")
             Timber.d("$lat - $lng")
             val database = WeatherDatabase.getInstance(applicationContext)
-            database.weatherInfoDao().getAll().collectLatest {
-                Timber.d("size of db = ${it.size}")
-                if(it.isEmpty()){
-                    val weather = CurrentWeatherService.create().getWeather(lat!!.toDouble(),lng!!.toDouble())
-                    database.weatherInfoDao().insertAll(listOf(weather.asDatabaseModel()))
-                }
+           val weatherInfo= database.weatherInfoDao().getWeather()
+            Timber.d("size of db = ${weatherInfo}")
+            if(weatherInfo==null){
+                val weather = CurrentWeatherService.create().getWeather(lat!!.toDouble(),lng!!.toDouble())
+                database.weatherInfoDao().insertAll(listOf(weather.asDatabaseModel()))
+
             }
 
 

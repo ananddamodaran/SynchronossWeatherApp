@@ -1,5 +1,7 @@
 package dev.anand.synchronossweatherapp.repository
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -18,8 +20,9 @@ import javax.inject.Singleton
 @Singleton
 class AppRepository @Inject constructor(
     private val weatherService: CurrentWeatherService,
-    private val weatherDAO: WeatherInfoDao
+    private val weatherDAO: WeatherInfoDao,
 ) {
+    @RequiresApi(Build.VERSION_CODES.O)
     val weather: LiveData<CurrentWeather> =
         Transformations.map(weatherDAO.getWeather().asLiveData()) {
             it?.asDomainModel()
@@ -28,13 +31,15 @@ class AppRepository @Inject constructor(
 
     @WorkerThread
     suspend fun getWeatherFlow(latitude: Double, longitude: Double) {
-
-        val weather = weatherService.getWeather(latitude, longitude)
-        Timber.d("WEATHER ${weather.toString()}")
-        val we = weather.asDatabaseModel()
+        Timber.d("fetchFrom API $latitude - $longitude")
         withContext(Dispatchers.IO) {
+            val weather =  weatherService.getWeather(latitude, longitude)
+            val we = weather.asDatabaseModel()
+            weatherDAO.clear()
             weatherDAO.insertAll(listOf(we))
         }
 
     }
-}
+
+
+    }

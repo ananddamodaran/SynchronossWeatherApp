@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId "dev.anand.synchronossweatherapp"
-        minSdk 24
+        minSdk 26
         targetSdk 32
         versionCode 1
         versionName "1.0"
@@ -64,6 +64,7 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation 'androidx.compose.material3:material3:1.0.0-alpha13'
+    implementation 'androidx.lifecycle:lifecycle-service:2.4.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
@@ -102,5 +103,12 @@ dependencies {
     //WorkManager
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
     implementation 'com.google.android.gms:play-services-location:20.0.0'
+
+    implementation "com.google.accompanist:accompanist-flowlayout:0.24.8-beta"
+
+    implementation "io.coil-kt:coil:2.1.0"
+    implementation "io.coil-kt:coil-compose:2.1.0"
+
+
 
 }

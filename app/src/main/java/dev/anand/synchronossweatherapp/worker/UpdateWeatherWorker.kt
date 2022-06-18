@@ -1,44 +1,38 @@
 package dev.anand.synchronossweatherapp.worker
 
 import android.content.Context
-import androidx.work.Constraints
 import androidx.work.CoroutineWorker
-import androidx.work.NetworkType
 import androidx.work.WorkerParameters
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.google.gson.stream.JsonReader
+import dev.anand.synchronossweatherapp.data.api.CurrentWeatherService
+import dev.anand.synchronossweatherapp.data.api.model.asDatabaseModel
 import dev.anand.synchronossweatherapp.data.db.WeatherDatabase
-import dev.anand.synchronossweatherapp.data.db.WeatherInfo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class UpdateWeatherWorker(context: Context, workerParams: WorkerParameters) :
+class UpdateWeatherWorker(val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
 
 
-    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+       override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
 
         try {
-            val filename = inputData.getString(KEY_FILENAME)
-            if (filename != null) {
-                applicationContext.assets.open(filename).use { inputStream ->
-                    JsonReader(inputStream.reader()).use { jsonReader ->
-                        val weatherType = object : TypeToken<List<WeatherInfo>>() {}.type
-                        val weatherList: List<WeatherInfo> =
-                            Gson().fromJson(jsonReader, weatherType)
-
-                        val database = WeatherDatabase.getInstance(applicationContext)
-                        database.weatherInfoDao().insertAll(weatherList)
-
-                        Result.success()
-                    }
+            val lat = inputData.getString("lat")
+            val lng = inputData.getString("lng")
+            Timber.d("$lat - $lng")
+            val database = WeatherDatabase.getInstance(applicationContext)
+            database.weatherInfoDao().getAll().collectLatest {
+                Timber.d("size of db = ${it.size}")
+                if(it.isEmpty()){
+                    val weather = CurrentWeatherService.create().getWeather(lat!!.toDouble(),lng!!.toDouble())
+                    database.weatherInfoDao().insertAll(listOf(weather.asDatabaseModel()))
                 }
-            } else {
-                Timber.tag(TAG).e("Error seeding database - no valid filename")
-                Result.failure()
             }
+
+
+            Result.success()
+
         } catch (ex: Exception) {
             Timber.tag(TAG).e(ex, "Error seeding database")
             Result.failure()
@@ -48,15 +42,7 @@ class UpdateWeatherWorker(context: Context, workerParams: WorkerParameters) :
 
 
     companion object {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresBatteryNotLow(true)
-            .build()
-
-
         private const val TAG = "WeatherDatabaseWorker"
-        const val KEY_FILENAME = "WEATHER_DATA_FILENAME"
-
 
     }
 }

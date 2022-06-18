@@ -26,7 +26,9 @@ fun WeatherResponse.asDatabaseModel(): WeatherInfo =
         main = this.weather[0].main,
         description = this.weather[0].description,
         temp = this.main.temp,
-        icon = this.weather[0].icon
+        icon = this.weather[0].icon,
+        lat = this.coord.lat,
+        lng = this.coord.lon
     )
 
 

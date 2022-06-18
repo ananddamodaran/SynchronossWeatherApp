@@ -1,10 +1,14 @@
 package dev.anand.synchronossweatherapp.data.db
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import dev.anand.synchronossweatherapp.domain.CurrentWeather
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Entity(tableName = WeatherInfo.TABLE_NAME)
 data class WeatherInfo(
@@ -14,7 +18,9 @@ data class WeatherInfo(
     val main: String,
     val description: String,
     val temp: Double,
-    val icon: String
+    val icon: String,
+    val lat: Double,
+    val lng: Double
 ) {
     companion object {
         const val TABLE_NAME = "weather_info"
@@ -34,9 +40,15 @@ fun WeatherInfo.asDomainModel(): CurrentWeather =
     )
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun Long.toDate(): String {
-    val formatter = SimpleDateFormat("dd/MM/yyyy hh:mm", Locale.US)
-    val calendar: Calendar = Calendar.getInstance()
-    calendar.timeInMillis = this
-    return formatter.format(calendar.time)
+
+    println(this.toString())
+
+    val dateTimeFormatter = DateTimeFormatter.ofPattern("EEE, d MMM yyyy  hh:mm a");
+    val instant = Instant.ofEpochMilli(this * 1000)
+    val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+    println(dateTimeFormatter.format(date))
+
+    return dateTimeFormatter.format(date)
 }

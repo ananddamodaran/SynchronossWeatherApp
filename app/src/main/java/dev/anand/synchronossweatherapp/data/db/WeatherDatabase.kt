@@ -5,13 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
-import dev.anand.synchronossweatherapp.util.DATABASE_NAME
-import dev.anand.synchronossweatherapp.util.WEATHER_DATA_FILENAME
-import dev.anand.synchronossweatherapp.worker.UpdateWeatherWorker
-import dev.anand.synchronossweatherapp.worker.UpdateWeatherWorker.Companion.KEY_FILENAME
+import dev.anand.synchronossweatherapp.util.Constants.DATABASE_NAME
 import timber.log.Timber
 
 @Database(
@@ -43,10 +37,10 @@ abstract class WeatherDatabase : RoomDatabase() {
                         override fun onCreate(db: SupportSQLiteDatabase) {
                             super.onCreate(db)
                             Timber.d("Callback onCreate")
-                            val request = OneTimeWorkRequestBuilder<UpdateWeatherWorker>()
+                          /*  val request = OneTimeWorkRequestBuilder<UpdateWeatherWorker>()
                                 .setInputData(workDataOf(KEY_FILENAME to WEATHER_DATA_FILENAME))
                                 .build()
-                            WorkManager.getInstance(context).enqueue(request)
+                            WorkManager.getInstance(context).enqueue(request)*/
                         }
                     }
                 )

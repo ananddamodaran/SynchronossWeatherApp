@@ -19,6 +19,7 @@ object Repository {
         weatherService: CurrentWeatherService,
         weatherDAO: WeatherInfoDao
     ): AppRepository {
-        return AppRepository(weatherService, weatherDAO)
+        return AppRepository(weatherService, weatherDAO
+        )
     }
 }

@@ -9,6 +9,9 @@ A weather app built with Jetpack Compose consuming [OpenWeather API](https://ope
 [Build Status - Github Actions]: https://github.com/ananddamodaran/SynchronossWeatherApp/actions/workflows/ci.yml/badge.svg?branch=dev
 [Build status]: https://github.com/ananddamodaran/SynchronossWeatherApp/actions
 
+#### Screenshot
+<img src="screenshots/home.png" width="250"/>
+
 #### **Libraries**
 
 **Kotlin** - Kotlin is a programming language that can run on JVM. Google has announced Kotlin as one of its officially supported programming languages in Android Studio; and the Android community is migrating at a pace from Java to Kotlin

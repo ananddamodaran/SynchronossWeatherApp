@@ -1,4 +1,4 @@
-package dev.anand.synchronossweatherapp.data.db
+package dev.anand.synchronossweatherapp.data.local
 
 import android.content.Context
 import androidx.room.Database
@@ -10,7 +10,7 @@ import timber.log.Timber
 
 @Database(
     entities = [
-        WeatherInfo::class
+        WeatherInfoEntity::class
     ], version = 1
 )
 abstract class WeatherDatabase : RoomDatabase() {

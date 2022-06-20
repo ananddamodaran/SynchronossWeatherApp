@@ -5,9 +5,9 @@ import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.NetworkType
 import androidx.work.WorkerParameters
-import dev.anand.synchronossweatherapp.data.api.CurrentWeatherService
-import dev.anand.synchronossweatherapp.data.api.model.asDatabaseModel
-import dev.anand.synchronossweatherapp.data.db.WeatherDatabase
+import dev.anand.synchronossweatherapp.data.local.WeatherDatabase
+import dev.anand.synchronossweatherapp.data.mapper.toWeatherInfoEntity
+import dev.anand.synchronossweatherapp.data.remote.OpenWeatherApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -28,9 +28,9 @@ class RefreshWeatherWorker(val context: Context, workerParams: WorkerParameters)
            // val hours: Int = (diff / (1000 * 60 * 60)).toInt()
             //Timber.d(diff.toString())
             val weather =
-                CurrentWeatherService.create().getWeather(weatherInfo.lat, weatherInfo.lng)
+                OpenWeatherApi.create().getWeather(weatherInfo.lat, weatherInfo.lng)
             database.weatherInfoDao().clear()
-            database.weatherInfoDao().insertAll(listOf(weather.asDatabaseModel()))
+            database.weatherInfoDao().insertAll(listOf(weather.toWeatherInfoEntity()))
 
         }
         Result.success()

@@ -24,7 +24,7 @@
 
 package dev.anand.synchronossweatherapp
 
-import dev.anand.synchronossweatherapp.data.api.CurrentWeatherService
+import dev.anand.synchronossweatherapp.data.remote.OpenWeatherApi
 import org.junit.Assert.*
 import org.junit.Test
 import java.io.IOException
@@ -42,8 +42,8 @@ class ExampleUnitTest {
 
     @Test
     suspend fun weather_api() {
-        val weatherService: CurrentWeatherService =
-            CurrentWeatherService.create()
+        val weatherService: OpenWeatherApi =
+            OpenWeatherApi.create()
 
         try {
            val response= weatherService.getWeather(10.76181,78.7088)

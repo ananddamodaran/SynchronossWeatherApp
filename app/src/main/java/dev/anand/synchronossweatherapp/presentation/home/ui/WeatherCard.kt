@@ -17,12 +17,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import dev.anand.synchronossweatherapp.domain.CurrentWeather
+import dev.anand.synchronossweatherapp.domain.model.WeatherInfo
 
 @ExperimentalMaterial3Api
 @Composable
 fun WeatherCard(
-   weather: CurrentWeather,
+    weather: WeatherInfo,
     modifier: Modifier = Modifier
 ) {
     Column(

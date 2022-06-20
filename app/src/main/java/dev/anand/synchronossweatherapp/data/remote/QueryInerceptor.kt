@@ -1,4 +1,4 @@
-package dev.anand.synchronossweatherapp.data.api
+package dev.anand.synchronossweatherapp.data.remote
 
 import dev.anand.synchronossweatherapp.BuildConfig
 import okhttp3.Interceptor

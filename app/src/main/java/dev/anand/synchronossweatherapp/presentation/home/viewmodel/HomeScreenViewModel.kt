@@ -1,4 +1,4 @@
-package dev.anand.synchronossweatherapp.viewmodel
+package dev.anand.synchronossweatherapp.presentation.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

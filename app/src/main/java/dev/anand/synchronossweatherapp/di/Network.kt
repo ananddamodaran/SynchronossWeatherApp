@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.anand.synchronossweatherapp.data.api.CurrentWeatherService
+import dev.anand.synchronossweatherapp.data.remote.OpenWeatherApi
 import javax.inject.Singleton
 
 @Module
@@ -13,8 +13,8 @@ object Network {
 
     @Provides
     @Singleton
-    fun provideWeatherService(): CurrentWeatherService {
-        return CurrentWeatherService.create()
+    fun provideWeatherService(): OpenWeatherApi {
+        return OpenWeatherApi.create()
     }
 
 

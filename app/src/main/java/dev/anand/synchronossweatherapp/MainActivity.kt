@@ -26,10 +26,10 @@ import androidx.work.workDataOf
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
-import dev.anand.synchronossweatherapp.domain.CurrentWeather
+import dev.anand.synchronossweatherapp.domain.model.WeatherInfo
+import dev.anand.synchronossweatherapp.presentation.home.viewmodel.HomeScreenViewModel
 import dev.anand.synchronossweatherapp.ui.theme.SynchronossWeatherAppTheme
 import dev.anand.synchronossweatherapp.util.Constants.REQUEST_CHECK_SETTINGS
-import dev.anand.synchronossweatherapp.viewmodel.HomeScreenViewModel
 import dev.anand.synchronossweatherapp.worker.UpdateWeatherWorker
 import timber.log.Timber
 
@@ -63,11 +63,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private val viewModel: HomeScreenViewModel by viewModels()
-    private val currentWeatherState = mutableStateOf<CurrentWeather>(CurrentWeather())
+    private val currentWeatherState = mutableStateOf<WeatherInfo>(WeatherInfo())
 
 
-    private var weatherUpdateObserver: Observer<CurrentWeather?> =
-        Observer<CurrentWeather?> { currentWeather ->
+    private var weatherUpdateObserver: Observer<WeatherInfo?> =
+        Observer<WeatherInfo?> { currentWeather ->
             Timber.d("currentWeather $currentWeather")
             currentWeather?.let {
                 currentWeatherState.value = it

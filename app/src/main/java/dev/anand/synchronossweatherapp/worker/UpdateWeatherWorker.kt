@@ -3,9 +3,9 @@ package dev.anand.synchronossweatherapp.worker
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import dev.anand.synchronossweatherapp.data.api.CurrentWeatherService
-import dev.anand.synchronossweatherapp.data.api.model.asDatabaseModel
-import dev.anand.synchronossweatherapp.data.db.WeatherDatabase
+import dev.anand.synchronossweatherapp.data.local.WeatherDatabase
+import dev.anand.synchronossweatherapp.data.mapper.toWeatherInfoEntity
+import dev.anand.synchronossweatherapp.data.remote.OpenWeatherApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -24,8 +24,8 @@ class UpdateWeatherWorker(val context: Context, workerParams: WorkerParameters) 
            val weatherInfo= database.weatherInfoDao().getWeather()
             Timber.d("size of db = ${weatherInfo}")
             if(weatherInfo==null){
-                val weather = CurrentWeatherService.create().getWeather(lat!!.toDouble(),lng!!.toDouble())
-                database.weatherInfoDao().insertAll(listOf(weather.asDatabaseModel()))
+                val weather = OpenWeatherApi.create().getWeather(lat!!.toDouble(),lng!!.toDouble())
+                database.weatherInfoDao().insertAll(listOf(weather.toWeatherInfoEntity()))
 
             }
 

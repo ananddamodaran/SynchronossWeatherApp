@@ -1,7 +1,7 @@
-package dev.anand.synchronossweatherapp.data.api
+package dev.anand.synchronossweatherapp.data.remote
 
 import dev.anand.synchronossweatherapp.BuildConfig
-import dev.anand.synchronossweatherapp.data.api.model.WeatherResponse
+import dev.anand.synchronossweatherapp.data.remote.dto.WeatherInfoDto
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.LoggingEventListener
@@ -10,17 +10,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface CurrentWeatherService {
+interface OpenWeatherApi {
     @GET("weather?units=metric")
     suspend fun getWeather(
         @Query("lat")
         lat: Double,
         @Query("lon")
         long: Double,
-    ): WeatherResponse
+    ): WeatherInfoDto
     companion object {
 
-        fun create(): CurrentWeatherService {
+        fun create(): OpenWeatherApi {
 
             val okHttpClient = OkHttpClient.Builder()
                 .apply { if (BuildConfig.DEBUG) eventListenerFactory(LoggingEventListener.Factory()) }
@@ -34,7 +34,7 @@ interface CurrentWeatherService {
                 .baseUrl(BuildConfig.WEATHER_APP_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-                .create(CurrentWeatherService::class.java)
+                .create(OpenWeatherApi::class.java)
         }
     }
 

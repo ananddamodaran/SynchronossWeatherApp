@@ -6,8 +6,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dev.anand.synchronossweatherapp.data.db.WeatherDatabase
-import dev.anand.synchronossweatherapp.data.db.WeatherInfoDao
+import dev.anand.synchronossweatherapp.data.local.WeatherDatabase
+import dev.anand.synchronossweatherapp.data.local.WeatherInfoDao
 import timber.log.Timber
 import javax.inject.Singleton
 

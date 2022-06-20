@@ -41,7 +41,6 @@ class MainActivity : ComponentActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private var locationUpdateState = false
-    private lateinit var workManager :WorkManager
 
     val  locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult) {
@@ -51,13 +50,13 @@ class MainActivity : ComponentActivity() {
                 Timber.d("lastloc- ${lastLocation?.latitude}, ${lastLocation?.longitude}")
                 Timber.d("lastloc- ${p0.lastLocation?.latitude}, ${p0.lastLocation?.longitude}")
                 fusedLocationClient.removeLocationUpdates(this)
-                    Timber.d("lastloc weather is null")
-                      val request = OneTimeWorkRequestBuilder<UpdateWeatherWorker>()
+                Timber.d("lastloc weather is null")
+                val request = OneTimeWorkRequestBuilder<UpdateWeatherWorker>()
                            .setInputData(workDataOf("lat" to p0.lastLocation?.latitude.toString(),
                            "lng" to p0.lastLocation?.longitude.toString()))
 
                           .build()
-                            WorkManager.getInstance(applicationContext).enqueue(request)
+                WorkManager.getInstance(applicationContext).enqueue(request)
 
             }
         }
@@ -171,9 +170,6 @@ class MainActivity : ComponentActivity() {
         if (ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-           /* ActivityCompat.requestPermissions(this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE)*/
             requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
             return

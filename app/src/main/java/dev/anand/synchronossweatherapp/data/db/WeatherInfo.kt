@@ -40,15 +40,13 @@ fun WeatherInfo.asDomainModel(): CurrentWeather =
     )
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun Long.toDate(): String {
 
     println(this.toString())
 
-    val dateTimeFormatter = DateTimeFormatter.ofPattern("EEE, d MMM yyyy  hh:mm a");
+    //val dateTimeFormatter = DateTimeFormatter.ofPattern("EEE, d MMM yyyy  hh:mm a");
+    val dateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
     val instant = Instant.ofEpochMilli(this * 1000)
     val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-    println(dateTimeFormatter.format(date))
-
     return dateTimeFormatter.format(date)
 }

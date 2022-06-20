@@ -32,7 +32,11 @@ fun WeatherCard(
             .padding(16.dp),
     ) {
         Text(
-            text = "${weather.name},\n${weather.dt}",
+            text = weather.name,
+            style = MaterialTheme.typography.headlineLarge
+        )
+        Text(
+            text = "Updated at ${weather.dt}",
             style = MaterialTheme.typography.headlineSmall
         )
 
@@ -76,7 +80,7 @@ fun WeatherCard(
             )
 
             Text(
-                text = weather.main,
+                text = weather.description,
                 style = MaterialTheme.typography.headlineLarge,
             )
         }

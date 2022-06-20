@@ -9,7 +9,7 @@ A weather app built with Jetpack Compose consuming [OpenWeather API](https://ope
 [Build Status - Github Actions]: https://github.com/ananddamodaran/SynchronossWeatherApp/actions/workflows/ci.yml/badge.svg?branch=dev
 [Build status]: https://github.com/ananddamodaran/SynchronossWeatherApp/actions
 
-**Libraries**
+#### **Libraries**
 
 **Kotlin** - Kotlin is a programming language that can run on JVM. Google has announced Kotlin as one of its officially supported programming languages in Android Studio; and the Android community is migrating at a pace from Java to Kotlin
 
@@ -45,3 +45,8 @@ AndroidX - Major improvement to the original Android Support Library, which is n
 **CI/CD:**
 
 **GitHub Actions** - GitHub Actions makes it easy to automate all your software workflows, now with world-class CI/CD. Build, test, and deploy your code right from GitHub. Make code reviews, branch management, and issue triaging work the way you want.
+
+#### Application architecture
+
+![mvvm-architecture](https://user-images.githubusercontent.com/29427904/174492802-ec28d4a9-e01f-471f-8486-183a772f535c.png)
+

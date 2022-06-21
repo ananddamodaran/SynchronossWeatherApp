@@ -11,10 +11,10 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 fun WeatherInfoEntity.toWeatherInfo(): WeatherInfo {
-    val dateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault());
+    val dateTimeFormatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault())
     val instant = Instant.ofEpochMilli(dt * 1000)
     val localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-    val dateTime=dateTimeFormatter.format(localDateTime)
+    val dateTime = dateTimeFormatter.format(localDateTime)
     return WeatherInfo(
         dt = dateTime,
         name = name,
@@ -22,10 +22,9 @@ fun WeatherInfoEntity.toWeatherInfo(): WeatherInfo {
         description = description,
         temp = temp,
         icon = icon,
-        coord = Coord(lat,lng)
+        coord = Coord(lat, lng)
     )
 }
-
 
 
 fun WeatherInfoDto.toWeatherInfoEntity(): WeatherInfoEntity =

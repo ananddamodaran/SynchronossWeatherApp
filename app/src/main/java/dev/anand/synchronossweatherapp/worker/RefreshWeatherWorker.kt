@@ -22,10 +22,10 @@ class RefreshWeatherWorker(val context: Context, workerParams: WorkerParameters)
         val database = WeatherDatabase.getInstance(applicationContext)
 
         val weatherInfo = database.weatherInfoDao().getWeather()
-        if(weatherInfo!=null) {
+        if (weatherInfo != null) {
             Timber.d(weatherInfo.name)
-           // val diff = Calendar.getInstance().timeInMillis - weatherInfo.dt * 1000
-           // val hours: Int = (diff / (1000 * 60 * 60)).toInt()
+            // val diff = Calendar.getInstance().timeInMillis - weatherInfo.dt * 1000
+            // val hours: Int = (diff / (1000 * 60 * 60)).toInt()
             //Timber.d(diff.toString())
             val weather =
                 OpenWeatherApi.create().getWeather(weatherInfo.lat, weatherInfo.lng)
@@ -34,7 +34,6 @@ class RefreshWeatherWorker(val context: Context, workerParams: WorkerParameters)
 
         }
         Result.success()
-
 
 
     }

@@ -14,18 +14,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SynchronosWeatherInfoViewModel @Inject internal constructor(
-    private val repository: SynchronossWeatherRepository) : ViewModel(){
+    private val repository: SynchronossWeatherRepository
+) : ViewModel() {
 
     var state by mutableStateOf(SynchronosWeatherInfoState())
 
     init {
-        getWeather(0.0,0.0)
+        getWeather(0.0, 0.0)
     }
+
     fun getWeather(lat: Double, lng: Double) {
         Timber.d("getWeather in ViewModel: $lat , $lng")
         viewModelScope.launch {
-            repository.getWeather(false,lat, lng).collect{ result->
-                when(result) {
+            repository.getWeather(false, lat, lng).collect { result ->
+                when (result) {
                     is Resource.Success -> {
                         result.data?.let { weatherList ->
                             state = state.copy(

@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SynchronossWeatherRepository {
     suspend fun getWeather(
-        fetchFromRemote:Boolean,
-        lat: Double, lng: Double): Flow<Resource<List<WeatherInfo>>>
+        fetchFromRemote: Boolean,
+        lat: Double, lng: Double
+    ): Flow<Resource<List<WeatherInfo>>>
 }

@@ -6,27 +6,25 @@ import androidx.work.WorkerParameters
 import dev.anand.synchronossweatherapp.data.local.WeatherDatabase
 import dev.anand.synchronossweatherapp.data.mapper.toWeatherInfoEntity
 import dev.anand.synchronossweatherapp.data.remote.OpenWeatherApi
-import dev.anand.synchronossweatherapp.domain.repository.SynchronossWeatherRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import javax.inject.Inject
 
 class UpdateWeatherWorker(val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
 
 
-       override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
 
         try {
             val lat = inputData.getString("lat")
             val lng = inputData.getString("lng")
             Timber.d("$lat - $lng")
             val database = WeatherDatabase.getInstance(applicationContext)
-           val weatherInfo= database.weatherInfoDao().getWeather()
+            val weatherInfo = database.weatherInfoDao().getWeather()
             Timber.d("size of db = ${weatherInfo}")
-            if(weatherInfo==null){
-                val weather = OpenWeatherApi.create().getWeather(lat!!.toDouble(),lng!!.toDouble())
+            if (weatherInfo == null) {
+                val weather = OpenWeatherApi.create().getWeather(lat!!.toDouble(), lng!!.toDouble())
                 database.weatherInfoDao().insertAll(listOf(weather.toWeatherInfoEntity()))
 
             }

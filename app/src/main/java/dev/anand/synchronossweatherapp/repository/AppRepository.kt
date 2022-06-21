@@ -21,8 +21,8 @@ class AppRepository @Inject constructor(
     private val weatherDAO: WeatherInfoDao,
 ) {
     val weather: LiveData<WeatherInfo> =
-        Transformations.map(weatherDAO.getAll().asLiveData()){
-                it?.toWeatherInfo()
+        Transformations.map(weatherDAO.getAll().asLiveData()) {
+            it?.toWeatherInfo()
         }
 
 
@@ -30,7 +30,7 @@ class AppRepository @Inject constructor(
     suspend fun getWeatherFlow(latitude: Double, longitude: Double) {
         Timber.d("fetchFrom API $latitude - $longitude")
         withContext(Dispatchers.IO) {
-            val weather =  weatherApi.getWeather(latitude, longitude)
+            val weather = weatherApi.getWeather(latitude, longitude)
             val we = weather.toWeatherInfoEntity()
             weatherDAO.clear()
             weatherDAO.insertAll(listOf(we))
@@ -39,4 +39,4 @@ class AppRepository @Inject constructor(
     }
 
 
-    }
+}

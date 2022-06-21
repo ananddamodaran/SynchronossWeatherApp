@@ -42,20 +42,24 @@ class MainActivity : ComponentActivity() {
     private lateinit var locationRequest: LocationRequest
     private var locationUpdateState = false
 
-    val  locationCallback = object : LocationCallback() {
+    val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult) {
             super.onLocationResult(p0)
             lastLocation = p0.lastLocation
-            if(lastLocation!=null) {
+            if (lastLocation != null) {
                 Timber.d("lastloc- ${lastLocation?.latitude}, ${lastLocation?.longitude}")
                 Timber.d("lastloc- ${p0.lastLocation?.latitude}, ${p0.lastLocation?.longitude}")
                 fusedLocationClient.removeLocationUpdates(this)
                 Timber.d("lastloc weather is null")
                 val request = OneTimeWorkRequestBuilder<UpdateWeatherWorker>()
-                           .setInputData(workDataOf("lat" to p0.lastLocation?.latitude.toString(),
-                           "lng" to p0.lastLocation?.longitude.toString()))
+                    .setInputData(
+                        workDataOf(
+                            "lat" to p0.lastLocation?.latitude.toString(),
+                            "lng" to p0.lastLocation?.longitude.toString()
+                        )
+                    )
 
-                          .build()
+                    .build()
                 WorkManager.getInstance(applicationContext).enqueue(request)
 
             }
@@ -105,19 +109,18 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    var requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                Timber.d("Permision granted")
 
+                locationUpdateState = true
+                startLocationUpdates()
+            } else {
+                Timber.d("Permision denied")
+            }
 
-    var requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-        if(isGranted){
-            Timber.d("Permision granted")
-
-            locationUpdateState = true
-            startLocationUpdates()
-        }else{
-            Timber.d("Permision denied")
         }
-
-    }
 
     override fun onPause() {
         super.onPause()
@@ -131,6 +134,7 @@ class MainActivity : ComponentActivity() {
             startLocationUpdates()
         }
     }
+
     private fun createLocationRequest() {
         locationRequest = LocationRequest()
         locationRequest.interval = 10000
@@ -157,8 +161,10 @@ class MainActivity : ComponentActivity() {
                 try {
 
 
-                    e.startResolutionForResult(this@MainActivity,
-                        REQUEST_CHECK_SETTINGS)
+                    e.startResolutionForResult(
+                        this@MainActivity,
+                        REQUEST_CHECK_SETTINGS
+                    )
                 } catch (_: IntentSender.SendIntentException) {
 
                 }
@@ -167,14 +173,21 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
 
-            requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION);
+            requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
 
             return
         }
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null /* Looper */)
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            null /* Looper */
+        )
     }
 
 }

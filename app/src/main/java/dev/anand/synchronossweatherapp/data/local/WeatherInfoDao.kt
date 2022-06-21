@@ -16,6 +16,7 @@ interface WeatherInfoDao {
 
     @Query("SELECT * FROM ${WeatherInfoEntity.TABLE_NAME}")
     fun getWeather(): WeatherInfoEntity
+
     @Query("DELETE FROM ${WeatherInfoEntity.TABLE_NAME}")
     fun clear()
 

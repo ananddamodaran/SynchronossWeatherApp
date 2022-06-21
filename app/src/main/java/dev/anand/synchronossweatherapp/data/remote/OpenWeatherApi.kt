@@ -18,6 +18,7 @@ interface OpenWeatherApi {
         @Query("lon")
         long: Double,
     ): WeatherInfoDto
+
     companion object {
 
         fun create(): OpenWeatherApi {
@@ -25,8 +26,10 @@ interface OpenWeatherApi {
             val okHttpClient = OkHttpClient.Builder()
                 .apply { if (BuildConfig.DEBUG) eventListenerFactory(LoggingEventListener.Factory()) }
                 .addInterceptor(QueryParameterAddInterceptor())
-                .addInterceptor(HttpLoggingInterceptor()
-                    .setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addInterceptor(
+                    HttpLoggingInterceptor()
+                        .setLevel(HttpLoggingInterceptor.Level.BODY)
+                )
                 .build()
 
             return Retrofit.Builder()

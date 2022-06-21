@@ -30,20 +30,20 @@ class SynchronossWeatherApp : Application(),
             )
             .build()
     }
+
     private fun createPeriodicWorkRequest() {
-        val refreshWeatherWorker = PeriodicWorkRequestBuilder<RefreshWeatherWorker>(2, TimeUnit.HOURS)
-            .setConstraints(RefreshWeatherWorker.constraints)
-            .addTag("refreshWeather")
-            .build()
-        val workManager= WorkManager.getInstance(this)
-        workManager .enqueueUniquePeriodicWork(
+        val refreshWeatherWorker =
+            PeriodicWorkRequestBuilder<RefreshWeatherWorker>(2, TimeUnit.HOURS)
+                .setConstraints(RefreshWeatherWorker.constraints)
+                .addTag("refreshWeather")
+                .build()
+        val workManager = WorkManager.getInstance(this)
+        workManager.enqueueUniquePeriodicWork(
             "periodicWeatherDownload",
             ExistingPeriodicWorkPolicy.KEEP,
             refreshWeatherWorker
         )
     }
-
-
 
 
 }

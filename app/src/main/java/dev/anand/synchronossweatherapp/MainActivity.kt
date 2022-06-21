@@ -14,20 +14,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.Observer
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
-import dev.anand.synchronossweatherapp.domain.model.WeatherInfo
-import dev.anand.synchronossweatherapp.presentation.home.viewmodel.HomeScreenViewModel
+import dev.anand.synchronossweatherapp.presentation.home.SynchronosWeatherInfoViewModel
+import dev.anand.synchronossweatherapp.presentation.home.WeatherCard
 import dev.anand.synchronossweatherapp.ui.theme.SynchronossWeatherAppTheme
 import dev.anand.synchronossweatherapp.util.Constants.REQUEST_CHECK_SETTINGS
 import dev.anand.synchronossweatherapp.worker.UpdateWeatherWorker
@@ -62,15 +60,15 @@ class MainActivity : ComponentActivity() {
                     .build()
                 WorkManager.getInstance(applicationContext).enqueue(request)
 
+
             }
         }
     }
 
-    private val viewModel: HomeScreenViewModel by viewModels()
-    private val currentWeatherState = mutableStateOf<WeatherInfo>(WeatherInfo())
+   // private val viewModel: HomeScreenViewModel by viewModels()
+    //private val currentWeatherState = mutableStateOf<WeatherInfo>(WeatherInfo())
 
-
-    private var weatherUpdateObserver: Observer<WeatherInfo?> =
+  /*  private var weatherUpdateObserver: Observer<WeatherInfo?> =
         Observer<WeatherInfo?> { currentWeather ->
             Timber.d("currentWeather $currentWeather")
             currentWeather?.let {
@@ -78,13 +76,13 @@ class MainActivity : ComponentActivity() {
             }
 
         }
-
+*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
-        viewModel.weather.observe(this, weatherUpdateObserver)
+        //viewModel.weather.observe(this, weatherUpdateObserver)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         setContent {
@@ -93,19 +91,25 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+
                     WeatherCard(
-                        currentWeatherState.value,
                         modifier = Modifier
                             .padding(16.dp)
                             .background(
                                 color = Color.Yellow
                             )
                     )
+
+                    val sVM: SynchronosWeatherInfoViewModel by viewModels()
+                    val sVMState = sVM.state
+                    Timber.d("SVM State :${sVMState}")
+
                 }
             }
 
         }
         createLocationRequest()
+
     }
 
 

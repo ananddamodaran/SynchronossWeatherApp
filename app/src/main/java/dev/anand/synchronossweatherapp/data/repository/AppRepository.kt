@@ -1,4 +1,4 @@
-package dev.anand.synchronossweatherapp.repository
+package dev.anand.synchronossweatherapp.data.repository
 
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData

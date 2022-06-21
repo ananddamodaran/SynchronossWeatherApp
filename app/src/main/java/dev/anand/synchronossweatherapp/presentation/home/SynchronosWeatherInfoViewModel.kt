@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.anand.synchronossweatherapp.domain.repository.SynchronossWeatherRepository
 import dev.anand.synchronossweatherapp.util.Resource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -20,15 +21,17 @@ class SynchronosWeatherInfoViewModel @Inject internal constructor(
     var state by mutableStateOf(SynchronosWeatherInfoState())
 
     init {
-        getWeather(0.0, 0.0)
+        getWeather(10.0, 78.0)
     }
 
-    fun getWeather(lat: Double, lng: Double) {
+
+    private fun getWeather(lat: Double, lng: Double) {
         Timber.d("getWeather in ViewModel: $lat , $lng")
         viewModelScope.launch {
             repository.getWeather(false, lat, lng).collect { result ->
                 when (result) {
                     is Resource.Success -> {
+                        delay(3000L)
                         result.data?.let { weatherList ->
                             state = state.copy(
                                 weatherInfoList = weatherList

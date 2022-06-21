@@ -31,6 +31,7 @@ abstract class WeatherDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context): WeatherDatabase {
             Timber.d("buildDatabase")
             return Room.databaseBuilder(context, WeatherDatabase::class.java, DATABASE_NAME)
+                .allowMainThreadQueries()
                 .addCallback(
                     object : RoomDatabase.Callback() {
 

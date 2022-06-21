@@ -3,7 +3,7 @@ package dev.anand.synchronossweatherapp.presentation.home.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.anand.synchronossweatherapp.repository.AppRepository
+import dev.anand.synchronossweatherapp.data.repository.AppRepository
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject

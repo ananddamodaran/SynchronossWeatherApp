@@ -1,12 +1,14 @@
-package dev.anand.synchronossweatherapp
+package dev.anand.synchronossweatherapp.presentation.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.SpanStyle
@@ -16,21 +18,37 @@ import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import dev.anand.synchronossweatherapp.domain.model.WeatherInfo
 
 @ExperimentalMaterial3Api
 @Composable
 fun WeatherCard(
-    weather: WeatherInfo,
+    viewModel : SynchronosWeatherInfoViewModel = hiltViewModel<SynchronosWeatherInfoViewModel>(),
     modifier: Modifier = Modifier
 ) {
+    val weatherState = viewModel.state
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Center
+    ) {
+        if(weatherState.isLoading) {
+            CircularProgressIndicator()
+        }
+    }
+
+      if(!weatherState.weatherInfoList.isEmpty()){
+       val weather = weatherState.weatherInfoList[0]
+
     Column(
         modifier = Modifier
             //.border(1.dp, Color.Red, RectangleShape)
             .fillMaxWidth()
             .padding(16.dp),
     ) {
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = weather.name,
             style = MaterialTheme.typography.headlineLarge
@@ -85,6 +103,7 @@ fun WeatherCard(
             )
         }
     }
+      }
 
 
 }

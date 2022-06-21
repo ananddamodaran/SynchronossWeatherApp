@@ -9,7 +9,7 @@ import dagger.hilt.components.SingletonComponent
 import dev.anand.synchronossweatherapp.data.local.WeatherDatabase
 import dev.anand.synchronossweatherapp.data.local.WeatherInfoDao
 import dev.anand.synchronossweatherapp.data.remote.OpenWeatherApi
-import dev.anand.synchronossweatherapp.repository.AppRepository
+import dev.anand.synchronossweatherapp.data.repository.AppRepository
 import javax.inject.Singleton
 
 @Module

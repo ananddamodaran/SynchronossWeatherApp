@@ -17,7 +17,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AppRepository @Inject constructor(
-    private val weatherService: OpenWeatherApi,
+    private val weatherApi: OpenWeatherApi,
     private val weatherDAO: WeatherInfoDao,
 ) {
     val weather: LiveData<WeatherInfo> =
@@ -30,7 +30,7 @@ class AppRepository @Inject constructor(
     suspend fun getWeatherFlow(latitude: Double, longitude: Double) {
         Timber.d("fetchFrom API $latitude - $longitude")
         withContext(Dispatchers.IO) {
-            val weather =  weatherService.getWeather(latitude, longitude)
+            val weather =  weatherApi.getWeather(latitude, longitude)
             val we = weather.toWeatherInfoEntity()
             weatherDAO.clear()
             weatherDAO.insertAll(listOf(we))

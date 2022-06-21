@@ -6,9 +6,11 @@ import androidx.work.WorkerParameters
 import dev.anand.synchronossweatherapp.data.local.WeatherDatabase
 import dev.anand.synchronossweatherapp.data.mapper.toWeatherInfoEntity
 import dev.anand.synchronossweatherapp.data.remote.OpenWeatherApi
+import dev.anand.synchronossweatherapp.domain.repository.SynchronossWeatherRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import javax.inject.Inject
 
 class UpdateWeatherWorker(val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {

@@ -17,7 +17,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SynchronossWeatherRepositoryImpl @Inject constructor(
-    private val weatherService: OpenWeatherApi,
+    private val weatherApi: OpenWeatherApi,
     private val weatherDAO: WeatherInfoDao
 ) : SynchronossWeatherRepository {
     override suspend fun getWeather(
@@ -44,7 +44,7 @@ class SynchronossWeatherRepositoryImpl @Inject constructor(
 
         Timber.d("fetchFrom API $lat - $lng")
         try {
-            val response = weatherService.getWeather(lat, lng)
+            val response = weatherApi.getWeather(lat, lng)
             val weatherEntity = response.toWeatherInfoEntity()
             weatherDAO.clear()
             weatherDAO.insertAll(listOf(weatherEntity))

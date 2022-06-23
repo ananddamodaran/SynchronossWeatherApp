@@ -6,5 +6,7 @@ data class CurrentWeather(
     val main: String="",
     val description: String="",
     val temp: Double=0.0,
-    val icon: String=""
+    val icon: String="",
+    val lat: Double=0.0,
+    val lng:Double=0.0
 )

@@ -57,9 +57,20 @@ class MainActivity : ComponentActivity() {
 
                           .build()
                 WorkManager.getInstance(applicationContext).enqueue(request)
-
+                checkLocation(lastLocation!!)
             }
         }
+    }
+
+    private fun checkLocation(lastLocation: Location) {
+        val dbCurrentWeather = viewModel.weather.value
+        dbCurrentWeather.let { weather ->
+            if(weather?.lat != lastLocation.latitude
+                || weather.lng != lastLocation.longitude){
+                Timber.d("Location changed")
+            }
+        }
+
     }
 
     private val viewModel: HomeScreenViewModel by viewModels()

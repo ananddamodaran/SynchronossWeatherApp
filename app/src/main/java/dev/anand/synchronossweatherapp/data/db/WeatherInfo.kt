@@ -36,7 +36,9 @@ fun WeatherInfo.asDomainModel(): CurrentWeather =
         main = this.main,
         description = this.description,
         temp = this.temp,
-        icon = this.icon
+        icon = this.icon,
+        lat = this.lat,
+        lng = this.lng
     )
 
 

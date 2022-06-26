@@ -1,7 +1,7 @@
 package dev.anand.synchronossweatherapp.domain
 
 data class CurrentWeather(
-    val dt: String="Updated at ",
+    val dt: String="",
     val name: String="Location",
     val main: String="",
     val description: String="",

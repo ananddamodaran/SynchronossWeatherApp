@@ -14,6 +14,7 @@ import timber.log.Timber
     ], version = 1
 )
 abstract class WeatherDatabase : RoomDatabase() {
+
     abstract fun weatherInfoDao(): WeatherInfoDao
 
     companion object {

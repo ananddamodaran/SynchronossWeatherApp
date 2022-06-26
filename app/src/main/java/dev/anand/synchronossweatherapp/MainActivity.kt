@@ -68,6 +68,8 @@ class MainActivity : ComponentActivity() {
             if(weather?.lat != lastLocation.latitude
                 || weather.lng != lastLocation.longitude){
                 Timber.d("Location changed")
+                currentWeatherState.value = CurrentWeather()
+
             }
         }
 

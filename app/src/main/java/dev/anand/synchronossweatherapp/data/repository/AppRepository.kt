@@ -5,9 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.asLiveData
 import dev.anand.synchronossweatherapp.data.local.WeatherInfoDao
+import dev.anand.synchronossweatherapp.data.local.WeatherInfoEntity
 import dev.anand.synchronossweatherapp.data.mapper.toWeatherInfo
 import dev.anand.synchronossweatherapp.data.mapper.toWeatherInfoEntity
-import dev.anand.synchronossweatherapp.data.remote.OpenWeatherApi
+import dev.anand.synchronossweatherapp.data.remote.OpenWeatherService
 import dev.anand.synchronossweatherapp.domain.model.WeatherInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,8 +18,9 @@ import javax.inject.Singleton
 
 @Singleton
 class AppRepository @Inject constructor(
-    private val weatherApi: OpenWeatherApi,
+    private val weatherApi: OpenWeatherService,
     private val weatherDAO: WeatherInfoDao,
+
 ) {
     val weather: LiveData<WeatherInfo> =
         Transformations.map(weatherDAO.getAll().asLiveData()) {
@@ -31,12 +33,13 @@ class AppRepository @Inject constructor(
         Timber.d("fetchFrom API $latitude - $longitude")
         withContext(Dispatchers.IO) {
             val weather = weatherApi.getWeather(latitude, longitude)
-            val we = weather.toWeatherInfoEntity()
+            val we = mutableListOf<WeatherInfoEntity>()
+            weather?.toWeatherInfoEntity()?.let { we.add(it) }
+
             weatherDAO.clear()
-            weatherDAO.insertAll(listOf(we))
+            weatherDAO.insertAll(we)
         }
 
     }
-
 
 }

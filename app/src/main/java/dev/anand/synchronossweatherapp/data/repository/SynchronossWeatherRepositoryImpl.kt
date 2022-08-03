@@ -2,16 +2,15 @@ package dev.anand.synchronossweatherapp.data.repository
 
 import androidx.annotation.WorkerThread
 import dev.anand.synchronossweatherapp.data.local.WeatherInfoDao
+import dev.anand.synchronossweatherapp.data.local.WeatherInfoEntity
 import dev.anand.synchronossweatherapp.data.mapper.toWeatherInfo
 import dev.anand.synchronossweatherapp.data.mapper.toWeatherInfoEntity
-import dev.anand.synchronossweatherapp.data.remote.OpenWeatherApi
+import dev.anand.synchronossweatherapp.data.remote.OpenWeatherService
 import dev.anand.synchronossweatherapp.domain.model.WeatherInfo
 import dev.anand.synchronossweatherapp.domain.repository.SynchronossWeatherRepository
 import dev.anand.synchronossweatherapp.util.Resource
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
@@ -20,7 +19,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SynchronossWeatherRepositoryImpl @Inject constructor(
-    private val weatherApi: OpenWeatherApi,
+    private val weatherApi: OpenWeatherService,
     private val weatherDAO: WeatherInfoDao
 ) : SynchronossWeatherRepository {
 
@@ -50,9 +49,10 @@ class SynchronossWeatherRepositoryImpl @Inject constructor(
             Timber.d("fetchFrom API $lat - $lng")
             try {
                 val response = weatherApi.getWeather(lat, lng)
-                val weatherEntity = response.toWeatherInfoEntity()
+                val weatherEntityList = mutableListOf<WeatherInfoEntity>()
+                response?.toWeatherInfoEntity()?.let { weatherEntityList.add(it) }
                 weatherDAO.clear()
-                weatherDAO.insertAll(listOf(weatherEntity))
+                weatherDAO.insertAll(weatherEntityList)
                 emit(Resource.Success(
                     data = weatherDAO
                         .getWeatherList()

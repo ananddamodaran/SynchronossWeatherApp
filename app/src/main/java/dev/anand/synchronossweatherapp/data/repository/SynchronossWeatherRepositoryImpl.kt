@@ -11,9 +11,7 @@ import dev.anand.synchronossweatherapp.domain.repository.SynchronossWeatherRepos
 import dev.anand.synchronossweatherapp.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import retrofit2.HttpException
 import timber.log.Timber
-import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -59,12 +57,7 @@ class SynchronossWeatherRepositoryImpl @Inject constructor(
                         .map { it.toWeatherInfo() }
                 ))
                 emit(Resource.Loading(false))
-            } catch (ex: IOException) {
-                ex.printStackTrace()
-                emit(Resource.Error("Couldn't load data"))
-                null
-            } catch (ex: HttpException) {
-                ex.printStackTrace()
+            }catch(ex:Exception){
                 emit(Resource.Error("Couldn't load data"))
                 null
             }

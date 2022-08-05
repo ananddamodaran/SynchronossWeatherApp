@@ -8,6 +8,7 @@ A weather app built with Jetpack Compose consuming [OpenWeather API](https://ope
 
 [Build Status - Github Actions]: https://github.com/ananddamodaran/SynchronossWeatherApp/actions/workflows/ci.yml/badge.svg?branch=dev
 [Build status]: https://github.com/ananddamodaran/SynchronossWeatherApp/actions
+<a href="https://github.com/ananddamodaran/SynchronossWeatherApp/commits/refactor"><img src="https://img.shields.io/github/last-commit/ananddamodaran/SynchronossWeatherApp?label=Last%20commit&color=blue"></a>
 
 #### Screenshot
 <img src="screenshots/home.png" width="250"/>

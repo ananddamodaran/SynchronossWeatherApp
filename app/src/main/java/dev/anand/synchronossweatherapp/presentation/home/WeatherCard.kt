@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
-import dev.anand.synchronossweatherapp.domain.model.WeatherInfo
 
 @ExperimentalMaterial3Api
 @Composable

@@ -8,7 +8,6 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
-import kotlinx.serialization.json.Json
 
 interface OpenWeatherService {
     suspend fun getWeather(lat:Double,long:Double): WeatherInfoDto?
@@ -36,6 +35,7 @@ interface OpenWeatherService {
             }
             client.sendPipeline.intercept(HttpSendPipeline.State) {
                 context.headers.append("AppVersion", BuildConfig.VERSION_NAME)
+                context.parameter("appid",BuildConfig.WEATHER_APP_ID)
             }
             return OpenWeatherServiceImpl(client)
         }

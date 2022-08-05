@@ -15,7 +15,7 @@ class OpenWeatherServiceImpl(private val client: HttpClient) : OpenWeatherServic
                 url(Constants.GET_WEATHER)
                 parameter("lat", lat)
                 parameter("lon", long)
-                parameter("appid",BuildConfig.WEATHER_APP_ID)
+
             }
         } catch (ex: RedirectResponseException) {
             // 3xx - responses

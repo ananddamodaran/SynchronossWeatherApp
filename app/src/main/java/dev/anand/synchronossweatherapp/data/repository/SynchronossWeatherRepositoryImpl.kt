@@ -17,50 +17,50 @@ import javax.inject.Singleton
 
 @Singleton
 class SynchronossWeatherRepositoryImpl @Inject constructor(
-    private val weatherApi: OpenWeatherService,
-    private val weatherDAO: WeatherInfoDao
+  private val weatherApi: OpenWeatherService,
+  private val weatherDAO: WeatherInfoDao
 ) : SynchronossWeatherRepository {
 
-    @WorkerThread
-    override suspend fun getWeather(
-        fetchFromRemote: Boolean,
-        lat: Double,
-        lng: Double
-    ): Flow<Resource<List<WeatherInfo>>> = flow {
-            emit(Resource.Loading(true))
-            val localWeatherInfoList = weatherDAO.getWeatherList()
-            emit(
-                Resource.Success(
-                    data = localWeatherInfoList.map {
-                        it.toWeatherInfo()
-                    }
-                )
-            )
-            val isDbEmpty = localWeatherInfoList.isEmpty()
-            val shouldLoadFromCache = !isDbEmpty //&& !fetchFromRemote
-            if (shouldLoadFromCache) {
-                emit(Resource.Loading(false))
-                return@flow
-            }
-
-
-            Timber.d("fetchFrom API $lat - $lng")
-            try {
-                val response = weatherApi.getWeather(lat, lng)
-                val weatherEntityList = mutableListOf<WeatherInfoEntity>()
-                response?.toWeatherInfoEntity()?.let { weatherEntityList.add(it) }
-                weatherDAO.clear()
-                weatherDAO.insertAll(weatherEntityList)
-                emit(Resource.Success(
-                    data = weatherDAO
-                        .getWeatherList()
-                        .map { it.toWeatherInfo() }
-                ))
-                emit(Resource.Loading(false))
-            }catch(ex:Exception){
-                emit(Resource.Error("Couldn't load data"))
-                null
-            }
+  @WorkerThread
+  override suspend fun getWeather(
+    fetchFromRemote: Boolean,
+    lat: Double,
+    lng: Double
+  ): Flow<Resource<List<WeatherInfo>>> = flow {
+    emit(Resource.Loading(true))
+    val localWeatherInfoList = weatherDAO.getWeatherList()
+    emit(
+      Resource.Success(
+        data = localWeatherInfoList.map {
+          it.toWeatherInfo()
         }
+      )
+    )
+    val isDbEmpty = localWeatherInfoList.isEmpty()
+    val shouldLoadFromCache = !isDbEmpty //&& !fetchFromRemote
+    if (shouldLoadFromCache) {
+      emit(Resource.Loading(false))
+      return@flow
+    }
+
+
+    Timber.d("fetchFrom API $lat - $lng")
+    try {
+      val response = weatherApi.getWeather(lat, lng)
+      val weatherEntityList = mutableListOf<WeatherInfoEntity>()
+      response?.toWeatherInfoEntity()?.let { weatherEntityList.add(it) }
+      weatherDAO.clear()
+      weatherDAO.insertAll(weatherEntityList)
+      emit(Resource.Success(
+        data = weatherDAO
+          .getWeatherList()
+          .map { it.toWeatherInfo() }
+      ))
+      emit(Resource.Loading(false))
+    } catch (ex: Exception) {
+      emit(Resource.Error("Couldn't load data"))
+      null
+    }
+  }
 
 }

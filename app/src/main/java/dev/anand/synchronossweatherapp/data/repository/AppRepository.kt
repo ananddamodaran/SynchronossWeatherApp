@@ -18,28 +18,28 @@ import javax.inject.Singleton
 
 @Singleton
 class AppRepository @Inject constructor(
-    private val weatherApi: OpenWeatherService,
-    private val weatherDAO: WeatherInfoDao,
+  private val weatherApi: OpenWeatherService,
+  private val weatherDAO: WeatherInfoDao,
 
-) {
-    val weather: LiveData<WeatherInfo> =
-        Transformations.map(weatherDAO.getAll().asLiveData()) {
-            it?.toWeatherInfo()
-        }
-
-
-    @WorkerThread
-    suspend fun getWeatherFlow(latitude: Double, longitude: Double) {
-        Timber.d("fetchFrom API $latitude - $longitude")
-        withContext(Dispatchers.IO) {
-            val weather = weatherApi.getWeather(latitude, longitude)
-            val we = mutableListOf<WeatherInfoEntity>()
-            weather?.toWeatherInfoEntity()?.let { we.add(it) }
-
-            weatherDAO.clear()
-            weatherDAO.insertAll(we)
-        }
-
+  ) {
+  val weather: LiveData<WeatherInfo> =
+    Transformations.map(weatherDAO.getAll().asLiveData()) {
+      it?.toWeatherInfo()
     }
+
+
+  @WorkerThread
+  suspend fun getWeatherFlow(latitude: Double, longitude: Double) {
+    Timber.d("fetchFrom API $latitude - $longitude")
+    withContext(Dispatchers.IO) {
+      val weather = weatherApi.getWeather(latitude, longitude)
+      val we = mutableListOf<WeatherInfoEntity>()
+      weather?.toWeatherInfoEntity()?.let { we.add(it) }
+
+      weatherDAO.clear()
+      weatherDAO.insertAll(we)
+    }
+
+  }
 
 }

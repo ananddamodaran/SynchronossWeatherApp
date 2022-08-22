@@ -11,8 +11,8 @@ import dev.anand.synchronossweatherapp.data.local.WeatherInfoDao
 @InstallIn(SingletonComponent::class)
 object Persistance {
 
-    @Provides
-    fun provideWeatherInfoDAO(database: WeatherDatabase): WeatherInfoDao {
-        return database.weatherInfoDao()
-    }
+  @Provides
+  fun provideWeatherInfoDAO(database: WeatherDatabase): WeatherInfoDao {
+    return database.weatherInfoDao()
+  }
 }

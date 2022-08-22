@@ -17,29 +17,29 @@ import javax.inject.Singleton
 object AppModule {
 
 
-    @Provides
-    @Singleton
-    fun provideOpenWeatherService(): OpenWeatherService {
-        return OpenWeatherService.createHttpClient()
-    }
+  @Provides
+  @Singleton
+  fun provideOpenWeatherService(): OpenWeatherService {
+    return OpenWeatherService.createHttpClient()
+  }
 
-    @Provides
-    @Singleton
-    fun provideAppDataBase(@ApplicationContext context: Context): WeatherDatabase {
-        return WeatherDatabase.getInstance(context)
-    }
+  @Provides
+  @Singleton
+  fun provideAppDataBase(@ApplicationContext context: Context): WeatherDatabase {
+    return WeatherDatabase.getInstance(context)
+  }
 
 
-    @Provides
-    @Singleton
-    fun provideAppRepository(
-        weatherApi: OpenWeatherService,
-        weatherDAO: WeatherInfoDao
-    ): AppRepository {
-        return AppRepository(
-            weatherApi, weatherDAO
-        )
-    }
+  @Provides
+  @Singleton
+  fun provideAppRepository(
+    weatherApi: OpenWeatherService,
+    weatherDAO: WeatherInfoDao
+  ): AppRepository {
+    return AppRepository(
+      weatherApi, weatherDAO
+    )
+  }
 
 
 }

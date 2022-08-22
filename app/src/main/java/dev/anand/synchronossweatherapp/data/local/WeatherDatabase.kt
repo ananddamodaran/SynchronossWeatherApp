@@ -9,43 +9,43 @@ import dev.anand.synchronossweatherapp.util.Constants.DATABASE_NAME
 import timber.log.Timber
 
 @Database(
-    entities = [
-        WeatherInfoEntity::class
-    ], version = 1
+  entities = [
+    WeatherInfoEntity::class
+  ], version = 1
 )
 abstract class WeatherDatabase : RoomDatabase() {
-    abstract fun weatherInfoDao(): WeatherInfoDao
+  abstract fun weatherInfoDao(): WeatherInfoDao
 
-    companion object {
+  companion object {
 
-        @Volatile
-        private var instance: WeatherDatabase? = null
+    @Volatile
+    private var instance: WeatherDatabase? = null
 
-        fun getInstance(context: Context): WeatherDatabase {
-            return instance ?: synchronized(this) {
-                instance ?: buildDatabase(context).also { instance = it }
-            }
-        }
-
-
-        private fun buildDatabase(context: Context): WeatherDatabase {
-            Timber.d("buildDatabase")
-            return Room.databaseBuilder(context, WeatherDatabase::class.java, DATABASE_NAME)
-                .allowMainThreadQueries()
-                .addCallback(
-                    object : RoomDatabase.Callback() {
-
-                        override fun onCreate(db: SupportSQLiteDatabase) {
-                            super.onCreate(db)
-                            Timber.d("Callback onCreate")
-                            /*  val request = OneTimeWorkRequestBuilder<UpdateWeatherWorker>()
-                                  .setInputData(workDataOf(KEY_FILENAME to WEATHER_DATA_FILENAME))
-                                  .build()
-                              WorkManager.getInstance(context).enqueue(request)*/
-                        }
-                    }
-                )
-                .build()
-        }
+    fun getInstance(context: Context): WeatherDatabase {
+      return instance ?: synchronized(this) {
+        instance ?: buildDatabase(context).also { instance = it }
+      }
     }
+
+
+    private fun buildDatabase(context: Context): WeatherDatabase {
+      Timber.d("buildDatabase")
+      return Room.databaseBuilder(context, WeatherDatabase::class.java, DATABASE_NAME)
+        .allowMainThreadQueries()
+        .addCallback(
+          object : Callback() {
+
+            override fun onCreate(db: SupportSQLiteDatabase) {
+              super.onCreate(db)
+              Timber.d("Callback onCreate")
+              /*  val request = OneTimeWorkRequestBuilder<UpdateWeatherWorker>()
+                    .setInputData(workDataOf(KEY_FILENAME to WEATHER_DATA_FILENAME))
+                    .build()
+                WorkManager.getInstance(context).enqueue(request)*/
+            }
+          }
+        )
+        .build()
+    }
+  }
 }

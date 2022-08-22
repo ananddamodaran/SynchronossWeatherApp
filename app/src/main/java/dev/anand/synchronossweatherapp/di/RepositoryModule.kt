@@ -13,10 +13,10 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
 
-    @Binds
-    @Singleton
-    abstract fun bindsSynchronossWeatherRepository(
-        synchronossWeatherRepositoryImpl: SynchronossWeatherRepositoryImpl
-    ): SynchronossWeatherRepository
+  @Binds
+  @Singleton
+  abstract fun bindsSynchronossWeatherRepository(
+    synchronossWeatherRepositoryImpl: SynchronossWeatherRepositoryImpl
+  ): SynchronossWeatherRepository
 
 }

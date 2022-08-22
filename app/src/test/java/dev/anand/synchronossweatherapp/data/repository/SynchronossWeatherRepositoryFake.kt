@@ -7,14 +7,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class SynchronossWeatherRepositoryFake : SynchronossWeatherRepository {
-    var weatherInfoToReturn = WeatherInfo()
+  var weatherInfoToReturn = WeatherInfo()
 
-    override suspend fun getWeather(
-        fetchFromRemote: Boolean,
-        lat: Double,
-        lng: Double
-    ): Flow<Resource<List<WeatherInfo>>> = flow{
-        emit(Resource.Success(listOf( weatherInfoToReturn)))
+  override suspend fun getWeather(
+    fetchFromRemote: Boolean,
+    lat: Double,
+    lng: Double
+  ): Flow<Resource<List<WeatherInfo>>> = flow {
+    emit(Resource.Success(listOf(weatherInfoToReturn)))
 
-    }
+  }
 }

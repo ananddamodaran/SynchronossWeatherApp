@@ -12,21 +12,23 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class SynchronosWeatherInfoViewModelTest {
-    @get:Rule
-    val coroutineRule = MainCoroutineRule()
-    private lateinit var viewModel: SynchronosWeatherInfoViewModel
-    private lateinit var repositoryFake: SynchronossWeatherRepository
-    @Before
-    fun setUp() {
-        repositoryFake = SynchronossWeatherRepositoryFake()
-        viewModel = SynchronosWeatherInfoViewModel(
-            repository = repositoryFake
-        )
-    }
-    @Test
-     fun `WeatherInfo are properly mapped to state`() {
-        val weatherInfos = WeatherInfo()
-        coroutineRule.dispatcher.scheduler.advanceUntilIdle()
-        assertThat(viewModel.state.weatherInfoList).isEqualTo(listOf(weatherInfos))
-    }
+  @get:Rule
+  val coroutineRule = MainCoroutineRule()
+  private lateinit var viewModel: SynchronosWeatherInfoViewModel
+  private lateinit var repositoryFake: SynchronossWeatherRepository
+
+  @Before
+  fun setUp() {
+    repositoryFake = SynchronossWeatherRepositoryFake()
+    viewModel = SynchronosWeatherInfoViewModel(
+      repository = repositoryFake
+    )
+  }
+
+  @Test
+  fun `WeatherInfo are properly mapped to state`() {
+    val weatherInfos = WeatherInfo()
+    coroutineRule.dispatcher.scheduler.advanceUntilIdle()
+    assertThat(viewModel.state.weatherInfoList).isEqualTo(listOf(weatherInfos))
+  }
 }

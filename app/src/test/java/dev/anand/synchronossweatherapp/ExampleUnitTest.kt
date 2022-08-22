@@ -1,27 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 package dev.anand.synchronossweatherapp
 
 import dev.anand.synchronossweatherapp.data.remote.OpenWeatherApi
@@ -35,22 +11,22 @@ import java.io.IOException
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
-    @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+  @Test
+  fun addition_isCorrect() {
+    assertEquals(4, 2 + 2)
+  }
+
+  @Test
+  suspend fun weather_api() {
+    val weatherService: OpenWeatherApi =
+      OpenWeatherApi.create()
+
+    try {
+      val response = weatherService.getWeather(10.76181, 78.7088)
+
+      assertEquals(response.name, "Trichy")
+    } catch (e: IOException) {
+      e.printStackTrace()
     }
-
-    @Test
-    suspend fun weather_api() {
-        val weatherService: OpenWeatherApi =
-            OpenWeatherApi.create()
-
-        try {
-           val response= weatherService.getWeather(10.76181,78.7088)
-
-            assertEquals(response.name,"Trichy")
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
+  }
 }

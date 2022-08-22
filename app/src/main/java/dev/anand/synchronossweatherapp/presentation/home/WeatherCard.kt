@@ -24,85 +24,85 @@ import coil.compose.rememberAsyncImagePainter
 @ExperimentalMaterial3Api
 @Composable
 fun WeatherCard(
-    viewModel : SynchronosWeatherInfoViewModel = hiltViewModel<SynchronosWeatherInfoViewModel>(),
-    modifier: Modifier = Modifier
+  viewModel: SynchronosWeatherInfoViewModel = hiltViewModel<SynchronosWeatherInfoViewModel>(),
+  modifier: Modifier = Modifier
 ) {
-    val weatherState = viewModel.state
+  val weatherState = viewModel.state
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Center
-    ) {
-        if(weatherState.isLoading) {
-            CircularProgressIndicator()
-        }
+  Box(
+    modifier = Modifier.fillMaxSize(),
+    contentAlignment = Center
+  ) {
+    if (weatherState.isLoading) {
+      CircularProgressIndicator()
     }
+  }
 
-      if(!weatherState.weatherInfoList.isEmpty()){
-       val weather = weatherState.weatherInfoList[0]
+  if (!weatherState.weatherInfoList.isEmpty()) {
+    val weather = weatherState.weatherInfoList[0]
 
     Column(
-        modifier = Modifier
-            //.border(1.dp, Color.Red, RectangleShape)
-            .fillMaxWidth()
-            .padding(16.dp),
+      modifier = Modifier
+        //.border(1.dp, Color.Red, RectangleShape)
+        .fillMaxWidth()
+        .padding(16.dp),
     ) {
+      Spacer(modifier = Modifier.height(8.dp))
+      Text(
+        text = weather.name,
+        style = MaterialTheme.typography.headlineLarge
+      )
+      Text(
+        text = "Updated at ${weather.dt}",
+        style = MaterialTheme.typography.headlineSmall
+      )
+
+      Spacer(modifier = Modifier.height(8.dp))
+      Column(
+        modifier = Modifier
+          //.border(1.dp, Color.Red, RectangleShape)
+          .fillMaxWidth()
+          .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+      ) {
+        val superscript = SpanStyle(
+          baselineShift = BaselineShift.Superscript,
+          fontSize = 20.sp, // font size of superscript
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = weather.name,
-            style = MaterialTheme.typography.headlineLarge
+          text = buildAnnotatedString {
+
+            append(weather.temp.toString())
+            withStyle(superscript) {
+              append("o")
+            }
+            append(" C")
+          },
+          style = MaterialTheme.typography.headlineLarge.copy(
+            fontWeight = FontWeight.Bold,
+
+            )
+
         )
+        Image(
+          painter = rememberAsyncImagePainter(
+            model = "https://openweathermap.org/img/wn/${weather.icon}@2x.png"
+          ),
+          contentDescription = null,
+          modifier = Modifier
+            .clip(MaterialTheme.shapes.large)
+            .fillMaxWidth()
+            .aspectRatio(3f / 2f)
+        )
+
         Text(
-            text = "Updated at ${weather.dt}",
-            style = MaterialTheme.typography.headlineSmall
+          text = weather.description,
+          style = MaterialTheme.typography.headlineLarge,
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
-        Column(
-            modifier = Modifier
-                //.border(1.dp, Color.Red, RectangleShape)
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            val superscript = SpanStyle(
-                baselineShift = BaselineShift.Superscript,
-                fontSize = 20.sp, // font size of superscript
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = buildAnnotatedString {
-
-                    append(weather.temp.toString())
-                    withStyle(superscript) {
-                        append("o")
-                    }
-                    append(" C")
-                },
-                style = MaterialTheme.typography.headlineLarge.copy(
-                    fontWeight = FontWeight.Bold,
-
-                    )
-
-            )
-            Image(
-                painter = rememberAsyncImagePainter(
-                    model = "https://openweathermap.org/img/wn/${weather.icon}@2x.png"
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.large)
-                    .fillMaxWidth()
-                    .aspectRatio(3f / 2f)
-            )
-
-            Text(
-                text = weather.description,
-                style = MaterialTheme.typography.headlineLarge,
-            )
-        }
-    }
       }
+    }
+  }
 
 
 }

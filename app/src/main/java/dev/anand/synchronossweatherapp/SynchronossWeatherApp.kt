@@ -12,38 +12,38 @@ import java.util.concurrent.TimeUnit
 
 @HiltAndroidApp
 class SynchronossWeatherApp : Application(),
-    Configuration.Provider {
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
-        createPeriodicWorkRequest()
-
+  Configuration.Provider {
+  override fun onCreate() {
+    super.onCreate()
+    if (BuildConfig.DEBUG) {
+      Timber.plant(Timber.DebugTree())
     }
+    createPeriodicWorkRequest()
 
-    override fun getWorkManagerConfiguration(): Configuration {
-        return Configuration.Builder()
-            .setMinimumLoggingLevel(
-                if (BuildConfig.DEBUG) android.util.Log.DEBUG else
-                    android.util.Log.ERROR
-            )
-            .build()
-    }
+  }
 
-    private fun createPeriodicWorkRequest() {
-        val refreshWeatherWorker =
-            PeriodicWorkRequestBuilder<RefreshWeatherWorker>(2, TimeUnit.HOURS)
-                .setConstraints(RefreshWeatherWorker.constraints)
-                .addTag("refreshWeather")
-                .build()
-        val workManager = WorkManager.getInstance(this)
-        workManager.enqueueUniquePeriodicWork(
-            "periodicWeatherDownload",
-            ExistingPeriodicWorkPolicy.KEEP,
-            refreshWeatherWorker
-        )
-    }
+  override fun getWorkManagerConfiguration(): Configuration {
+    return Configuration.Builder()
+      .setMinimumLoggingLevel(
+        if (BuildConfig.DEBUG) android.util.Log.DEBUG else
+          android.util.Log.ERROR
+      )
+      .build()
+  }
+
+  private fun createPeriodicWorkRequest() {
+    val refreshWeatherWorker =
+      PeriodicWorkRequestBuilder<RefreshWeatherWorker>(2, TimeUnit.HOURS)
+        .setConstraints(RefreshWeatherWorker.constraints)
+        .addTag("refreshWeather")
+        .build()
+    val workManager = WorkManager.getInstance(this)
+    workManager.enqueueUniquePeriodicWork(
+      "periodicWeatherDownload",
+      ExistingPeriodicWorkPolicy.KEEP,
+      refreshWeatherWorker
+    )
+  }
 
 
 }

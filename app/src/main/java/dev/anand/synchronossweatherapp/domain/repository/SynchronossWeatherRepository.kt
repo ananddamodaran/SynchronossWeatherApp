@@ -5,8 +5,8 @@ import dev.anand.synchronossweatherapp.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface SynchronossWeatherRepository {
-    suspend fun getWeather(
-        fetchFromRemote: Boolean,
-        lat: Double, lng: Double
-    ): Flow<Resource<List<WeatherInfo>>>
+  suspend fun getWeather(
+    fetchFromRemote: Boolean,
+    lat: Double, lng: Double
+  ): Flow<Resource<List<WeatherInfo>>>
 }
